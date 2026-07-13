@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+<!-- PWA / "native app" meta tags -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ChixMins">
+<meta name="theme-color" content="#FF3E7F">
+
+<title>ChixMins: The Pinoy AI Rizz App</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  body {
+    font-family: 'Poppins', sans-serif;
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .font-display { font-family: 'Baloo 2', cursive; }
+  .gradient-bg {
+    background: linear-gradient(135deg, #FF3E7F 0%, #FF9A3E 45%, #FFD93E 100%);
+  }
+  .card-pop {
+    background: white;
+    border: 3px solid #1E1E2F;
+    box-shadow: 6px 6px 0px 0px #1E1E2F;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .card-pop:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 8px 8px 0px 0px #1E1E2F;
+  }
+  .btn-pop {
+    box-shadow: 4px 4px 0px 0px #1E1E2F;
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+  }
+  .btn-pop:active {
+    transform: translate(4px, 4px);
+    box-shadow: 0px 0px 0px 0px #1E1E2F;
+  }
+  .spinner {
+    border: 4px solid #ffffff55;
+    border-top: 4px solid #ffffff;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-thumb { background: #FF3E7F; border-radius: 4px; }
+
+  /* Accessibility: respect reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+  }
+  /* Visible keyboard focus for custom controls */
+  [role="button"]:focus-visible {
+    outline: 4px solid #FF3E7F;
+    outline-offset: 2px;
+  }
+</style>
+<script>
+  // Generate an app icon on the fly (gradient + heart emoji) so the PWA has a real
+  // home-screen icon without needing any external image files.
+  (function () {
+    try {
+      const canvas = document.createElement('canvas');
+      canvas.width = 512;
+      canvas.height = 512;
+      const ctx = canvas.getContext('2d');
+      const grad = ctx.createLinearGradient(0, 0, 512, 512);
+      grad.addColorStop(0, '#FF3E7F');
+      grad.addColorStop(0.45, '#FF9A3E');
+      grad.addColorStop(1, '#FFD93E');
+      ctx.fillStyle = grad;
+      if (ctx.roundRect) {
+        ctx.beginPath();
+        ctx.roundRect(0, 0, 512, 512, 110);
+        ctx.fill();
+      } else {
+        ctx.fillRect(0, 0, 512, 512);
+      }
+      ctx.font = '260px serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('💘', 256, 292);
+      const iconUrl = canvas.toDataURL('image/png');
+
+      const appleIcon = document.createElement('link');
+      appleIcon.rel = 'apple-touch-icon';
+      appleIcon.href = iconUrl;
+      document.head.appendChild(appleIcon);
+
+      const favicon = document.createElement('link');
+      favicon.rel = 'icon';
+      favicon.href = iconUrl;
+      document.head.appendChild(favicon);
+
+      const manifest = {
+        name: 'ChixMins: The Pinoy AI Rizz App',
+        short_name: 'ChixMins',
+        start_url: '.',
+        display: 'standalone',
+        background_color: '#FF3E7F',
+        theme_color: '#FF3E7F',
+        orientation: 'portrait',
+        icons: [{ src: iconUrl, sizes: '512x512', type: 'image/png' }]
+      };
+      const manifestLink = document.createElement('link');
+      manifestLink.rel = 'manifest';
+      manifestLink.href = 'data:application/json,' + encodeURIComponent(JSON.stringify(manifest));
+      document.head.appendChild(manifestLink);
+    } catch (e) {
+      /* icon/manifest generation is best-effort; app still works without it */
+    }
+  })();
+</script>
+</head>
+<body class="min-h-screen gradient-bg">
+
+<div class="max-w-3xl mx-auto px-4 py-8 sm:py-12">
+
+  <!-- Header -->
+  <div class="text-center mb-8">
+    <h1 class="font-display text-5xl sm:text-6xl font-800 text-white drop-shadow-[3px_3px_0px_rgba(30,30,47,1)]">
+      ChixMins <span class="inline-block">💘</span>
+    </h1>
+    <p class="text-white font-semibold text-lg mt-2 drop-shadow-[1px_1px_0px_rgba(30,30,47,0.8)]">
+      The Pinoy AI Rizz App — sabihin mo lang, ako na bahala! 🇵🇭
+    </p>
+  </div>
+
+  <!-- Main Input Card -->
+  <div class="card-pop rounded-2xl p-5 mb-6">
+    <label for="userPrompt" class="font-display font-700 text-[#1E1E2F] text-lg flex items-center gap-2">✍️ Context / Prompt</label>
+    <textarea id="userPrompt" rows="3" placeholder="Ex: Crush ko 'to, gusto ko sana i-continue yung usapan namin about sa pusa niya..."
+      class="w-full mt-2 border-2 border-[#1E1E2F] rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#FF3E7F] resize-none"></textarea>
+
+    <label class="font-display font-700 text-[#1E1E2F] text-lg flex items-center gap-2 mt-5 mb-2">📸 Chat Screenshot</label>
+    <input id="imageInput" type="file" accept="image/*" class="hidden">
+    <div id="dropzone" role="button" tabindex="0" aria-label="Tap to upload a screenshot from your photo library"
+      class="relative flex flex-col items-center justify-center gap-1 border-4 border-dashed border-[#1E1E2F] rounded-2xl bg-[#FFF7EE] py-10 px-4 cursor-pointer active:scale-[0.98] transition-transform">
+      <div id="dropzonePlaceholder" class="flex flex-col items-center gap-2 pointer-events-none">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-14 h-14 text-[#FF3E7F]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 8a2 2 0 0 1 2-2h1.5l1-1.5h7l1 1.5H18a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8Z"/>
+          <circle cx="12" cy="13" r="3.5"/>
+        </svg>
+        <p class="font-display font-700 text-[#1E1E2F] text-base text-center">I-tap para mag-upload ng Screenshot</p>
+        <p class="text-xs text-gray-400 text-center">Tap to choose from your photo library</p>
+      </div>
+      <img id="imagePreview" class="hidden max-h-60 rounded-xl border-2 border-[#1E1E2F] object-contain" alt="Uploaded screenshot preview">
+      <button id="removeImageBtn" type="button" aria-label="Remove uploaded screenshot"
+        class="hidden absolute top-2 right-2 bg-[#1E1E2F] text-white w-8 h-8 rounded-full font-bold leading-none focus-visible:outline focus-visible:outline-4 focus-visible:outline-[#FF3E7F]">✕</button>
+    </div>
+  </div>
+
+  <!-- Vibe Selector -->
+  <div class="card-pop rounded-2xl p-5 mb-6">
+    <label class="font-display font-700 text-[#1E1E2F] text-lg flex items-center gap-2 mb-3">🎙️ Piliin ang Vibe (Language/Tone)</label>
+    <div class="grid grid-cols-2 gap-2">
+      <div>
+        <input type="radio" id="vibeTaglish" name="vibe" value="taglish" class="peer sr-only" checked>
+        <label for="vibeTaglish"
+          class="flex flex-col items-center justify-center text-center h-full rounded-xl border-2 border-[#1E1E2F] px-3 py-3 cursor-pointer peer-checked:bg-[#1E1E2F] peer-checked:text-white peer-focus-visible:ring-4 peer-focus-visible:ring-[#FF3E7F] transition-colors">
+          <span class="font-display font-700 text-sm">Taglish</span>
+          <span class="text-[11px] opacity-70">Standard Pinoy</span>
+        </label>
+      </div>
+      <div>
+        <input type="radio" id="vibeConyo" name="vibe" value="conyo" class="peer sr-only">
+        <label for="vibeConyo"
+          class="flex flex-col items-center justify-center text-center h-full rounded-xl border-2 border-[#1E1E2F] px-3 py-3 cursor-pointer peer-checked:bg-[#1E1E2F] peer-checked:text-white peer-focus-visible:ring-4 peer-focus-visible:ring-[#FF3E7F] transition-colors">
+          <span class="font-display font-700 text-sm">Conyo Taglish 💅</span>
+          <span class="text-[11px] opacity-70">BGC / Ateneo / DLSU</span>
+        </label>
+      </div>
+      <div>
+        <input type="radio" id="vibeEnglish" name="vibe" value="english" class="peer sr-only">
+        <label for="vibeEnglish"
+          class="flex flex-col items-center justify-center text-center h-full rounded-xl border-2 border-[#1E1E2F] px-3 py-3 cursor-pointer peer-checked:bg-[#1E1E2F] peer-checked:text-white peer-focus-visible:ring-4 peer-focus-visible:ring-[#FF3E7F] transition-colors">
+          <span class="font-display font-700 text-sm">Pure English 🌍</span>
+          <span class="text-[11px] opacity-70">International Smooth</span>
+        </label>
+      </div>
+      <div>
+        <input type="radio" id="vibeFilipino" name="vibe" value="filipino" class="peer sr-only">
+        <label for="vibeFilipino"
+          class="flex flex-col items-center justify-center text-center h-full rounded-xl border-2 border-[#1E1E2F] px-3 py-3 cursor-pointer peer-checked:bg-[#1E1E2F] peer-checked:text-white peer-focus-visible:ring-4 peer-focus-visible:ring-[#FF3E7F] transition-colors">
+          <span class="font-display font-700 text-sm">Pure Filipino ✍️</span>
+          <span class="text-[11px] opacity-70">Makata / Hugot</span>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <button id="hatawBtn" class="btn-pop w-full gradient-bg text-white font-display font-800 text-xl py-4 rounded-xl flex items-center justify-center gap-2">
+    <span id="hatawText">Hataw na! 🔥</span>
+  </button>
+  <p id="errorMsg" class="text-white bg-[#1E1E2F]/80 rounded-lg px-3 py-2 text-sm font-semibold mt-3 hidden"></p>
+
+  <!-- Results -->
+  <div id="resultsWrap" class="space-y-4 mt-6"></div>
+
+  <footer class="text-center text-white text-xs mt-10 opacity-80">
+    Made with 💖 gamit ang Gemini Flash. Walang server, walang gastos — sa browser mo lang tumatakbo.
+  </footer>
+
+  <!-- Settings (API Key) -->
+  <div class="mt-6 flex flex-col items-center">
+    <button id="settingsToggle" type="button" aria-expanded="false" aria-controls="settingsPanel" aria-label="API key settings"
+      class="w-10 h-10 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/30 text-white text-lg focus-visible:outline focus-visible:outline-4 focus-visible:outline-white transition-colors">
+      ⚙️
+    </button>
+    <div id="settingsPanel" class="hidden w-full mt-3 card-pop rounded-2xl p-5">
+      <label for="apiKeyInput" class="font-display font-700 text-[#1E1E2F] text-base flex items-center gap-2">🔑 Gemini API Key</label>
+      <p class="text-xs text-gray-500 mb-2">Naka-save 'to sa browser mo lang (localStorage) — i-type mo isang beses lang, hindi mo na kailangan ulitin.</p>
+      <div class="flex flex-col sm:flex-row gap-2">
+        <input id="apiKeyInput" type="password" placeholder="Paste your Gemini API key here..."
+          class="flex-1 border-2 border-[#1E1E2F] rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#FF3E7F]">
+        <button id="saveKeyBtn" class="btn-pop bg-[#1E1E2F] text-white font-semibold px-4 py-2 rounded-xl">Save</button>
+      </div>
+      <p id="keyStatus" class="text-sm mt-2 font-semibold"></p>
+      <p class="text-xs text-gray-400 mt-1">Walang API key? Kumuha ng libre sa <a href="https://aistudio.google.com/app/apikey" target="_blank" class="underline text-[#FF3E7F]">aistudio.google.com/app/apikey</a></p>
+    </div>
+  </div>
+</div>
+
+<script>
+  const API_KEY_STORAGE_KEY = 'chixmins_gemini_key';
+
+  function getApiKey() {
+    return localStorage.getItem(API_KEY_STORAGE_KEY) || '';
+  }
+
+  // Register a minimal service worker so the browser treats this as an installable
+  // app (this only has real effect once the file is hosted over HTTPS).
+  if ('serviceWorker' in navigator) {
+    try {
+      const swCode = "self.addEventListener('install', e => self.skipWaiting());" +
+        "self.addEventListener('activate', e => self.clients.claim());" +
+        "self.addEventListener('fetch', e => {});";
+      const swBlob = new Blob([swCode], { type: 'text/javascript' });
+      navigator.serviceWorker.register(URL.createObjectURL(swBlob)).catch(() => {});
+    } catch (e) {}
+  }
+
+  const dropzone = document.getElementById('dropzone');
+  const imageInput = document.getElementById('imageInput');
+  const dropzonePlaceholder = document.getElementById('dropzonePlaceholder');
+  const imagePreview = document.getElementById('imagePreview');
+  const removeImageBtn = document.getElementById('removeImageBtn');
+  const userPrompt = document.getElementById('userPrompt');
+  const hatawBtn = document.getElementById('hatawBtn');
+  const hatawText = document.getElementById('hatawText');
+  const resultsWrap = document.getElementById('resultsWrap');
+  const errorMsg = document.getElementById('errorMsg');
+  const settingsToggle = document.getElementById('settingsToggle');
+  const settingsPanel = document.getElementById('settingsPanel');
+  const apiKeyInput = document.getElementById('apiKeyInput');
+  const saveKeyBtn = document.getElementById('saveKeyBtn');
+  const keyStatus = document.getElementById('keyStatus');
+
+  let base64ImageData = null;
+  let imageMimeType = null;
+
+  // Load any previously saved key so the person never has to retype it
+  const savedKey = getApiKey();
+  if (savedKey) {
+    apiKeyInput.value = savedKey;
+    keyStatus.textContent = '✅ Naka-save na ang key mo.';
+    keyStatus.classList.add('text-green-600');
+  }
+
+  settingsToggle.addEventListener('click', () => {
+    const willShow = settingsPanel.classList.contains('hidden');
+    settingsPanel.classList.toggle('hidden');
+    settingsToggle.setAttribute('aria-expanded', String(willShow));
+    if (willShow) apiKeyInput.focus();
+  });
+
+  saveKeyBtn.addEventListener('click', () => {
+    const key = apiKeyInput.value.trim();
+    if (!key) {
+      keyStatus.textContent = '⚠️ Paste a key first.';
+      keyStatus.classList.remove('text-green-600');
+      keyStatus.classList.add('text-red-600');
+      return;
+    }
+    localStorage.setItem(API_KEY_STORAGE_KEY, key);
+    keyStatus.textContent = '✅ Saved! Andito na siya sa browser mo.';
+    keyStatus.classList.remove('text-red-600');
+    keyStatus.classList.add('text-green-600');
+  });
+
+  dropzone.addEventListener('click', () => imageInput.click());
+  dropzone.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      imageInput.click();
+    }
+  });
+
+  imageInput.addEventListener('change', () => {
+    const file = imageInput.files[0];
+    if (!file) return;
+    imageMimeType = file.type;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const dataUrl = e.target.result;
+      base64ImageData = dataUrl.split(',')[1];
+      imagePreview.src = dataUrl;
+      imagePreview.classList.remove('hidden');
+      dropzonePlaceholder.classList.add('hidden');
+      removeImageBtn.classList.remove('hidden');
+    };
+    reader.readAsDataURL(file);
+  });
+
+  removeImageBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    base64ImageData = null;
+    imageMimeType = null;
+    imageInput.value = '';
+    imagePreview.src = '';
+    imagePreview.classList.add('hidden');
+    dropzonePlaceholder.classList.remove('hidden');
+    removeImageBtn.classList.add('hidden');
+  });
+
+  function showError(msg) {
+    errorMsg.textContent = msg;
+    errorMsg.classList.remove('hidden');
+  }
+  function clearError() {
+    errorMsg.textContent = '';
+    errorMsg.classList.add('hidden');
+  }
+
+  function setLoading(isLoading) {
+    hatawBtn.disabled = isLoading;
+    hatawBtn.classList.toggle('opacity-70', isLoading);
+    hatawText.innerHTML = isLoading
+      ? '<div class="flex items-center gap-2"><div class="spinner"></div> Nag-iisip pa si ChixMins...</div>'
+      : 'Hataw na! 🔥';
+  }
+
+  function renderResults(lines) {
+    resultsWrap.innerHTML = '';
+    lines.forEach((line, idx) => {
+      const card = document.createElement('div');
+      card.className = 'card-pop rounded-2xl p-5';
+      card.innerHTML = `
+        <div class="flex justify-between items-start gap-3">
+          <p class="font-medium text-[#1E1E2F] flex-1 leading-relaxed">${line.replace(/</g, '&lt;')}</p>
+          <button class="copy-btn shrink-0 btn-pop bg-[#FFD93E] text-[#1E1E2F] font-semibold text-sm px-3 py-2 rounded-xl">Copy</button>
+        </div>
+        <span class="text-xs text-gray-400 font-semibold">Rizz Line #${idx + 1}</span>
+      `;
+      card.querySelector('.copy-btn').addEventListener('click', function () {
+        navigator.clipboard.writeText(line).then(() => {
+          this.textContent = 'Copied! ✅';
+          setTimeout(() => { this.textContent = 'Copy'; }, 1500);
+        });
+      });
+      resultsWrap.appendChild(card);
+    });
+  }
+
+  const VIBE_INSTRUCTIONS = {
+    taglish: "Vibe Language Profile: Taglish (Standard Pinoy). Write in natural, everyday Taglish the way young Filipinos actually text — a fluid, casual mix of Tagalog and English in the same sentence (di, kasi, naman, talaga), warm and approachable, zero stiffness.",
+    conyo: "Vibe Language Profile: Conyo Taglish (BGC / Ateneo / DLSU style). Write like a private-school 'conyo' kid: English-heavy sentence structure sprinkled with Tagalog particles, frequent filler words like 'like', 'omg', 'pare', 'grabe', 'chos', a breezy, playful, socialite energy.",
+    english: "Vibe Language Profile: Pure English (International Smooth). Write entirely in polished, natural English — zero Tagalog or Taglish words — confident, charming, and smooth enough to work anywhere in the world.",
+    filipino: "Vibe Language Profile: Pure Filipino (Makata / Makabayan Hugot). Write entirely in deep, poetic Filipino with minimal to no English, in the reflective, romantic 'hugot' spoken-word style of a makata, rich with Filipino imagery and metaphor."
+  };
+
+  hatawBtn.addEventListener('click', async () => {
+    clearError();
+    const prompt = userPrompt.value.trim();
+    if (!prompt && !base64ImageData) {
+      showError('⚠️ Maglagay ka ng context/prompt o mag-upload ng screenshot.');
+      return;
+    }
+
+    const apiKey = getApiKey();
+    if (!apiKey) {
+      showError('⚠️ Wala pang naka-save na API key. I-tap ang ⚙️ button sa ibaba para mag-add.');
+      settingsPanel.classList.remove('hidden');
+      settingsToggle.setAttribute('aria-expanded', 'true');
+      apiKeyInput.focus();
+      return;
+    }
+
+    const selectedVibe = document.querySelector('input[name="vibe"]:checked').value;
+    const vibeInstruction = VIBE_INSTRUCTIONS[selectedVibe];
+
+    const systemPrompt = "You are a master of Pinoy communication and modern dating dynamics. Your task is to analyze the conversation screenshot or text provided. Break away from standard, rigid AI formats. Do not use generic phrases. Instead, generate 3 highly natural, deeply context-aware responses or pick-up lines based on the chosen Vibe Language setting. Make it sound like an actual human text message—witty, casual, and exactly matching the selected language profile.\n\n" +
+      vibeInstruction +
+      "\n\nRespond ONLY with a valid JSON array of exactly 3 strings, like [\"line one\", \"line two\", \"line three\"]. No markdown formatting, no extra commentary, no code fences.";
+
+    const parts = [{ text: systemPrompt + "\n\nUser context: " + (prompt || "(see attached screenshot)") }];
+    if (base64ImageData) {
+      parts.push({ inline_data: { mime_type: imageMimeType, data: base64ImageData } });
+    }
+
+    const requestBody = {
+      contents: [{ parts }],
+      generationConfig: { temperature: 0.95 }
+    };
+
+    setLoading(true);
+    resultsWrap.innerHTML = '';
+
+    try {
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${apiKey}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(requestBody)
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        const msg = data?.error?.message || 'Something went wrong calling the Gemini API.';
+        throw new Error(msg);
+      }
+
+      const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (!rawText) {
+        throw new Error('No response text from Gemini. Baka na-block ng safety filter, try mo ulit.');
+      }
+
+      let cleaned = rawText.trim().replace(/^```json/i, '').replace(/^```/, '').replace(/```$/, '').trim();
+
+      let lines;
+      try {
+        lines = JSON.parse(cleaned);
+      } catch (parseErr) {
+        lines = cleaned.split('\n').map(l => l.replace(/^[\d\.\-\*\s"]+/, '').replace(/"$/, '').trim()).filter(Boolean).slice(0, 3);
+      }
+
+      if (!Array.isArray(lines) || lines.length === 0) {
+        throw new Error('Hindi ma-parse ang sagot ng AI. Try mo ulit.');
+      }
+
+      renderResults(lines.slice(0, 3));
+    } catch (err) {
+      showError('❌ ' + err.message);
+    } finally {
+      setLoading(false);
+    }
+  });
+</script>
+</body>
+</html>
