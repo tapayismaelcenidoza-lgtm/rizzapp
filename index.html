@@ -244,8 +244,10 @@
 
   <!-- App Logic -->
   <script>
-    // FIXED: Upgraded model alias to point strictly to the active -latest branch
-    const MODEL = "gemini-1.5-flash-latest";
+    // FIXED: gemini-1.5-flash-latest was fully shut down by Google (all 1.0/1.5 models are gone).
+    // Using the auto-updating "flash-latest" alias, which currently resolves to Gemini 3.5 Flash (GA May 2026).
+    // This alias is what Google recommends so the app keeps working as models rotate.
+    const MODEL = "gemini-flash-latest";
 
     // DOM Elements
     const dropZone = document.getElementById('dropZone');
