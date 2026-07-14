@@ -17,7 +17,6 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <style>
-    /* Smooth custom scrolling */
     .custom-scroll::-webkit-scrollbar {
       width: 6px;
     }
@@ -28,7 +27,6 @@
       background: #cbd5e1;
       border-radius: 4px;
     }
-    /* Simple pulsing heart animation */
     @keyframes heartbeat {
       0%, 100% { transform: scale(1); }
       50% { transform: scale(1.1); }
@@ -52,17 +50,27 @@
           <p class="text-xs font-semibold text-slate-500 tracking-wider uppercase">Pinoy AI Rizz & Wingman</p>
         </div>
       </div>
-      <!-- Past Banats Button -->
-      <button id="historyBtn" class="bg-white/80 hover:bg-white text-slate-700 px-3 py-2 rounded-xl shadow-sm border border-slate-200/50 flex items-center space-x-1 transition active:scale-95">
-        <i class="fa-solid fa-clock-rotate-left"></i>
-        <span class="text-xs font-bold">Past Banats</span>
-      </button>
+      <div class="flex space-x-2">
+        <!-- Settings/Key Button -->
+        <button id="settingsBtn" class="bg-white/80 hover:bg-white text-slate-700 p-2.5 rounded-xl shadow-sm border border-slate-200/50 flex items-center justify-center transition active:scale-95">
+          <i class="fa-solid fa-key text-rose-500"></i>
+        </button>
+        <!-- Past Banats Button -->
+        <button id="historyBtn" class="bg-white/80 hover:bg-white text-slate-700 px-3 py-2 rounded-xl shadow-sm border border-slate-200/50 flex items-center space-x-1 transition active:scale-95">
+          <i class="fa-solid fa-clock-rotate-left"></i>
+          <span class="text-xs font-bold">Past Banats</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Security Warning Panel (Shows only if API key is missing) -->
+    <div id="setupWarning" class="bg-amber-50 border border-amber-200 rounded-2xl p-4 mb-6 text-sm text-amber-800 space-y-2">
+      <p class="font-bold"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Kailangan ng API Key</p>
+      <p class="text-xs">Para gumana ang app nang ligtas nang hindi naba-block ng GitHub, paki-click ang 🔑 key button sa taas at i-paste ang iyong Google AI Studio key.</p>
     </div>
 
     <!-- Input Section Card -->
     <div class="bg-white rounded-3xl p-6 shadow-xl shadow-rose-100/50 border border-white/60 mb-6">
-      
-      <!-- Clipboard paste hint (Hidden on mobile) -->
       <p class="hidden md:block text-center text-xs text-slate-400 mb-2 italic">
         <i class="fa-regular fa-keyboard"></i> PC User? Just press <kbd class="bg-slate-100 px-1 rounded font-mono">Ctrl + V</kbd> to paste a screenshot directly!
       </p>
@@ -133,16 +141,13 @@
       </button>
     </div>
 
-    <!-- Results Block (Hidden initially) -->
+    <!-- Results Block -->
     <div id="resultsBlock" class="space-y-6 hidden">
-      
-      <!-- Animated Kilig Meter -->
       <div class="bg-gradient-to-r from-slate-900 via-purple-950 to-slate-900 text-white rounded-3xl p-6 shadow-xl border border-white/10">
         <div class="flex items-center space-x-2 mb-3">
           <i class="fa-solid fa-heart-pulse pulse-heart text-rose-500 text-xl"></i>
           <h3 class="font-black tracking-tight text-sm uppercase">Kilig Meter</h3>
         </div>
-        <!-- Progress Bar -->
         <div class="relative w-full h-4 bg-slate-800 rounded-full overflow-hidden mb-3">
           <div id="kiligBar" class="h-full bg-gradient-to-r from-pink-500 via-rose-500 to-red-500 transition-all duration-1000" style="width: 0%"></div>
         </div>
@@ -155,17 +160,15 @@
         </div>
       </div>
 
-      <!-- Rizz Recommendations Panel -->
+      <!-- Rizz Recommendations -->
       <div class="bg-white rounded-3xl p-6 shadow-xl shadow-rose-100/50 border border-white/60">
         <h3 class="font-black text-slate-800 text-sm uppercase tracking-wider mb-4 flex items-center space-x-2">
           <span>💡</span> <span>Mga Pwedeng Isagot</span>
         </h3>
-        <div class="space-y-3" id="rizzOutputContainer">
-          <!-- Rizz Options will be loaded dynamically here -->
-        </div>
+        <div class="space-y-3" id="rizzOutputContainer"></div>
       </div>
 
-      <!-- Tito Al Wingman Live Chat Section -->
+      <!-- Tito Al Wingman Chat -->
       <div class="bg-white rounded-3xl p-6 shadow-xl shadow-rose-100/50 border border-white/60 flex flex-col h-[400px]">
         <div class="flex items-center justify-between border-b pb-3 mb-3">
           <div class="flex items-center space-x-2">
@@ -175,17 +178,14 @@
               <p class="text-[10px] text-emerald-500 font-bold flex items-center"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full inline-block mr-1"></span> Active Wingman</p>
             </div>
           </div>
-          <span class="text-[10px] text-slate-400 italic">Live follow-up chat</span>
         </div>
 
-        <!-- Chat Messages Area -->
         <div id="chatMessages" class="flex-1 overflow-y-auto pr-1 space-y-3 text-xs custom-scroll">
           <div class="bg-rose-50 text-slate-700 p-3 rounded-2xl rounded-tl-none max-w-[85%] self-start">
-            Hoy! May naisip akong mga banat sa itaas. Pero kung may gusto ka pang baguhin, itanong mo lang sa akin dito! Handa akong sumuporta sa'yo.
+            Hoy! May naisip akong mga banat sa itaas. Pero kung may gusto ka pang baguhin, itanong mo lang sa akin dito!
           </div>
         </div>
 
-        <!-- Chat Input Form -->
         <div class="mt-3 flex items-center space-x-2 border-t pt-3">
           <input type="text" id="chatInput" class="flex-1 rounded-xl bg-slate-100 border-none p-3 text-xs focus:outline-none focus:ring-2 focus:ring-rose-500 transition" placeholder="Tanungin si Tito Al...">
           <button id="sendChatBtn" class="bg-rose-500 hover:bg-rose-600 text-white w-9 h-9 rounded-xl flex items-center justify-center transition active:scale-90">
@@ -193,9 +193,31 @@
           </button>
         </div>
       </div>
-
     </div>
 
+  </div>
+
+  <!-- Settings / API Drawer -->
+  <div id="settingsDrawer" class="fixed inset-y-0 right-0 max-w-sm w-full bg-white shadow-2xl z-50 transform translate-x-full transition-transform duration-300 ease-in-out border-l flex flex-col">
+    <div class="p-6 border-b flex justify-between items-center">
+      <h3 class="font-black text-slate-800 text-lg flex items-center space-x-2">
+        <i class="fa-solid fa-key text-rose-500"></i>
+        <span>API Key Setup</span>
+      </h3>
+      <button id="closeSettingsBtn" class="text-slate-400 hover:text-slate-600 p-2">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+    </div>
+    <div class="p-6 space-y-4 flex-1">
+      <p class="text-xs text-slate-500">I-save natin ang bagong Google API Key mo nang ligtas dito sa device mo.</p>
+      <div>
+        <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Google Gemini API Key</label>
+        <input type="password" id="apiKeyInput" class="w-full rounded-xl border border-slate-200 p-3 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500" placeholder="AIzaSy...">
+      </div>
+      <button id="saveKeyBtn" class="w-full bg-rose-500 hover:bg-rose-600 text-white font-bold py-3 rounded-xl text-xs transition">
+        Save API Key
+      </button>
+    </div>
   </div>
 
   <!-- Slide-out Past Banats History Drawer -->
@@ -209,13 +231,7 @@
         <i class="fa-solid fa-xmark text-lg"></i>
       </button>
     </div>
-    
-    <!-- History Items -->
-    <div id="historyList" class="flex-1 overflow-y-auto p-6 space-y-4 custom-scroll">
-      <!-- Loaded dynamically -->
-    </div>
-
-    <!-- History Controls -->
+    <div id="historyList" class="flex-1 overflow-y-auto p-6 space-y-4 custom-scroll"></div>
     <div class="p-6 border-t bg-slate-50 flex space-x-3">
       <button id="clearHistoryBtn" class="flex-1 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-3 rounded-xl text-xs transition">
         Clear History
@@ -223,13 +239,12 @@
     </div>
   </div>
 
-  <!-- Gray Overlay for drawer -->
+  <!-- Gray Overlay -->
   <div id="drawerOverlay" class="fixed inset-0 bg-black/40 z-40 hidden transition-opacity"></div>
 
-  <!-- App Logic (JavaScript) -->
+  <!-- App Logic -->
   <script>
-    const API_KEY = "AQ.Ab8RN6JQV7Wr51GfQFjzqy5f1bFSJh_7owGaYD4RnGMiA5qHwA"; // Configured API key
-    const MODEL = "gemini-2.5-flash"; // Speed optimized fast model
+    const MODEL = "gemini-2.5-flash";
 
     // DOM Elements
     const dropZone = document.getElementById('dropZone');
@@ -242,19 +257,26 @@
     const generateBtn = document.getElementById('generateBtn');
     const resultsBlock = document.getElementById('resultsBlock');
     const rizzOutputContainer = document.getElementById('rizzOutputContainer');
+    const setupWarning = document.getElementById('setupWarning');
 
-    // Kilig Meter Elements
+    // Kilig Meter
     const kiligBar = document.getElementById('kiligBar');
     const kiligLabel = document.getElementById('kiligLabel');
     const kiligPercentage = document.getElementById('kiligPercentage');
     const kiligFeedback = document.getElementById('kiligFeedback');
 
-    // Chat Elements
+    // Chat
     const chatMessages = document.getElementById('chatMessages');
     const chatInput = document.getElementById('chatInput');
     const sendChatBtn = document.getElementById('sendChatBtn');
 
-    // History Elements
+    // Drawer Elements
+    const settingsBtn = document.getElementById('settingsBtn');
+    const settingsDrawer = document.getElementById('settingsDrawer');
+    const closeSettingsBtn = document.getElementById('closeSettingsBtn');
+    const apiKeyInput = document.getElementById('apiKeyInput');
+    const saveKeyBtn = document.getElementById('saveKeyBtn');
+
     const historyBtn = document.getElementById('historyBtn');
     const historyDrawer = document.getElementById('historyDrawer');
     const closeHistoryBtn = document.getElementById('closeHistoryBtn');
@@ -262,41 +284,66 @@
     const historyList = document.getElementById('historyList');
     const clearHistoryBtn = document.getElementById('clearHistoryBtn');
 
-    // App State Variables
     let selectedImageBase64 = null;
-    let chatSessionHistory = []; // Keeps conversational context
+    let chatSessionHistory = [];
 
-    // 1. Image upload handling
-    dropZone.addEventListener('click', () => fileInput.click());
-    fileInput.addEventListener('change', handleFileSelect);
+    // Check Local API Key on Startup
+    function getStoredKey() {
+      return localStorage.getItem('chixmins_api_key') || "";
+    }
 
-    // Drag and Drop
-    dropZone.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      dropZone.classList.add('border-rose-500', 'bg-rose-50');
+    function checkKeyPresence() {
+      const key = getStoredKey();
+      if (key) {
+        setupWarning.classList.add('hidden');
+        apiKeyInput.value = key;
+      } else {
+        setupWarning.classList.remove('hidden');
+      }
+    }
+    checkKeyPresence();
+
+    // Key management
+    settingsBtn.addEventListener('click', () => {
+      settingsDrawer.classList.remove('translate-x-full');
+      drawerOverlay.classList.remove('hidden');
     });
-    dropZone.addEventListener('dragleave', () => {
-      dropZone.classList.remove('border-rose-500', 'bg-rose-50');
+    closeSettingsBtn.addEventListener('click', () => {
+      settingsDrawer.classList.add('translate-x-full');
+      drawerOverlay.classList.add('hidden');
     });
-    dropZone.addEventListener('drop', (e) => {
-      e.preventDefault();
-      dropZone.classList.remove('border-rose-500', 'bg-rose-50');
-      if(e.dataTransfer.files.length) {
-        fileInput.files = e.dataTransfer.files;
-        handleFileSelect();
+    saveKeyBtn.addEventListener('click', () => {
+      const newKey = apiKeyInput.value.trim();
+      if(newKey) {
+        localStorage.setItem('chixmins_api_key', newKey);
+        checkKeyPresence();
+        settingsDrawer.classList.add('translate-x-full');
+        drawerOverlay.classList.add('hidden');
+        alert("API Key Saved Successfully! Securely kept in your browser.");
+      } else {
+        alert("Please enter a valid key!");
       }
     });
 
-    // Handle clipboard paste (PC Users)
+    // Image Upload Logic
+    dropZone.addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', handleFileSelect);
+
+    dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('border-rose-500', 'bg-rose-50'); });
+    dropZone.addEventListener('dragleave', () => { dropZone.classList.remove('border-rose-500', 'bg-rose-50'); });
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('border-rose-500', 'bg-rose-50');
+      if(e.dataTransfer.files.length) { fileInput.files = e.dataTransfer.files; handleFileSelect(); }
+    });
+
     document.addEventListener('paste', async (e) => {
       const items = e.clipboardData.items;
       for (let i = 0; i < items.length; i++) {
         if (items[i].type.indexOf('image') !== -1) {
           const file = items[i].getAsFile();
           const reader = new FileReader();
-          reader.onload = function(evt) {
-            setSelectedImage(evt.target.result);
-          };
+          reader.onload = (evt) => { setSelectedImage(evt.target.result); };
           reader.readAsDataURL(file);
           break;
         }
@@ -307,9 +354,7 @@
       const file = fileInput.files[0];
       if (file) {
         const reader = new FileReader();
-        reader.onload = function(e) {
-          setSelectedImage(e.target.result);
-        };
+        reader.onload = (e) => { setSelectedImage(e.target.result); };
         reader.readAsDataURL(file);
       }
     }
@@ -321,15 +366,22 @@
     }
 
     removeImageBtn.addEventListener('click', (e) => {
-      e.stopPropagation(); // Avoid triggering file selection window
+      e.stopPropagation();
       selectedImageBase64 = null;
       imagePreview.src = '';
       imagePreviewContainer.classList.add('hidden');
       fileInput.value = '';
     });
 
-    // 2. Main API Generation Logic
+    // Main AI Trigger
     generateBtn.addEventListener('click', async () => {
+      const activeKey = getStoredKey();
+      if (!activeKey) {
+        alert("Paki-setup muna ang iyong API Key gamit ang 🔑 Settings button sa itaas!");
+        settingsBtn.click();
+        return;
+      }
+
       const context = contextInput.value.trim();
       const vibe = document.querySelector('input[name="vibe"]:checked').value;
 
@@ -338,7 +390,6 @@
         return;
       }
 
-      // Initialize UI state
       generateBtn.disabled = true;
       generateBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> <span>Tito Al is thinking...</span>`;
       resultsBlock.classList.remove('hidden');
@@ -346,60 +397,48 @@
       resetKiligMeter();
       resetChatArea(vibe);
 
-      // Scroll to view
       resultsBlock.scrollIntoView({ behavior: 'smooth' });
 
-      // Construct Prompt System
       const systemPrompt = `You are "Tito Al", a highly supportive Pinoy Wingman helping the user flirt successfully.
 Analyze the user's conversational context and/or chat screenshot.
 Based on the selected vibe "${vibe}", generate exactly 3 response suggestions.
 
 You must respond in a valid JSON format with the exact keys: "rizz", "score", "level", and "analysis".
-"rizz": An array of exactly 3 response options. Keep the sentences short, punchy, and formatted like modern chat messages (no formal punctuation, use texting slang). Make them match the chosen vibe:
+"rizz": An array of exactly 3 response options. Keep them short, punchy, and modern. Make them match the chosen vibe:
 - Taglish Standard: Balanced casual Metro Manila Filipino.
-- Conyo BGC: Uses slang from BGC, DLSU, Ateneo. Highly conversational, slightly posh.
+- Conyo BGC: Uses slang from BGC, DLSU, Ateneo.
 - Pure English Smooth: Smooth, flirtatious, intelligent english.
 - Pure Filipino Makata: Artistic, deep tagalog, poet-like, hugot.
 
-"score": A integer number between 0 and 100.
+"score": An integer number between 0 and 100.
 "level": A rating label corresponding to the score.
 - 0-20: Seenzone Malala 😭
 - 21-50: Pwede Na / Delikado ⚠️
 - 51-80: May Pag-asa, Kapit Lang! ✨
 - 81-100: May Kasal Na Agad! Premium Kilig 💍
 
-"analysis": A witty, funny, 1-sentence analytical feedback about the current interaction.
+"analysis": A witty, funny, 1-sentence analytical feedback about the current interaction.`;
 
-Do not output markdown blockquotes, wrap your response in a json block.`;
-
-      // API request construction
       const payload = {
-        contents: [
-          {
-            parts: [
-              { text: systemPrompt },
-              ...(context ? [{ text: `User Context: "${context}"` }] : [])
-            ]
-          }
-        ],
-        generationConfig: {
-          responseMimeType: "application/json"
-        }
+        contents: [{
+          parts: [
+            { text: systemPrompt },
+            ...(context ? [{ text: `User Context: "${context}"` }] : [])
+          ]
+        }],
+        generationConfig: { responseMimeType: "application/json" }
       };
 
       if (selectedImageBase64) {
         const base64Data = selectedImageBase64.split(',')[1];
         const mimeType = selectedImageBase64.split(';')[0].split(':')[1];
         payload.contents[0].parts.unshift({
-          inlineData: {
-            mimeType: mimeType,
-            data: base64Data
-          }
+          inlineData: { mimeType: mimeType, data: base64Data }
         });
       }
 
       try {
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${API_KEY}`, {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${activeKey}`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload)
@@ -409,15 +448,12 @@ Do not output markdown blockquotes, wrap your response in a json block.`;
         const jsonText = data.candidates[0].content.parts[0].text;
         const parsedResult = JSON.parse(jsonText);
 
-        // Render Kilig Meter
         updateKiligMeter(parsedResult.score, parsedResult.level, parsedResult.analysis);
 
-        // Render Rizz Suggestions
         parsedResult.rizz.forEach((option, idx) => {
           renderRizzCard(idx + 1, option);
         });
 
-        // Save to past history
         saveToHistory({
           timestamp: Date.now(),
           image: selectedImageBase64,
@@ -429,7 +465,6 @@ Do not output markdown blockquotes, wrap your response in a json block.`;
           analysis: parsedResult.analysis
         });
 
-        // Store active session for chat
         chatSessionHistory = [
           { role: "user", parts: [{ text: `Here is our conversation context. Original suggestions were: ${parsedResult.rizz.join(', ')}` }] },
           { role: "model", parts: [{ text: `Noted, let's work on this chat together using our vibe: ${vibe}. Ask me anything about this conversation context!` }] }
@@ -437,14 +472,13 @@ Do not output markdown blockquotes, wrap your response in a json block.`;
 
       } catch (error) {
         console.error(error);
-        alert("Baka mahina ang connection o nagka-problema sa API. Subukan ulit mamaya!");
+        alert("Baka mahina ang connection o may error sa API Key mo. I-verify ang key sa Settings!");
       } finally {
         generateBtn.disabled = false;
         generateBtn.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles"></i> <span>Hataw na!</span>`;
       }
     });
 
-    // Render utilities
     function renderRizzCard(index, text) {
       const card = document.createElement('div');
       card.className = "bg-rose-50/50 hover:bg-rose-50 border border-rose-100 p-4 rounded-2xl flex justify-between items-center transition group";
@@ -464,9 +498,7 @@ Do not output markdown blockquotes, wrap your response in a json block.`;
       navigator.clipboard.writeText(text).then(() => {
         const icon = btn.querySelector('i');
         icon.className = "fa-solid fa-check text-emerald-500";
-        setTimeout(() => {
-          icon.className = "fa-regular fa-copy text-xs";
-        }, 1500);
+        setTimeout(() => { icon.className = "fa-regular fa-copy text-xs"; }, 1500);
       });
     };
 
@@ -484,31 +516,24 @@ Do not output markdown blockquotes, wrap your response in a json block.`;
       kiligFeedback.innerText = analysis;
     }
 
-    // 3. Tito Al Interactive Chat Integration
     function resetChatArea(vibe) {
       let welcomeMsg = "Hoy! May naisip akong mga banat sa itaas. Pero kung may gusto ka pang baguhin, itanong mo lang sa akin dito!";
       if (vibe.includes("Conyo")) {
-        welcomeMsg = "Hey, those recommendations up there are like, so solid. But if you want to tweak something, just ask me here! Let's get that reply, bro.";
+        welcomeMsg = "Hey, those recommendations up there are like, so solid. But if you want to tweak something, just ask me here!";
       } else if (vibe.includes("Makata")) {
-        welcomeMsg = "Ayan ang aking sining sa itaas giliw. Kung nais mo pang pag-alabib ang tamis ng inyong ugnayan, ipahayag mo rito.";
+        welcomeMsg = "Ayan ang aking sining sa itaas giliw. Nais mo ba itong baguhin?";
       }
-      chatMessages.innerHTML = `
-        <div class="bg-rose-50 text-slate-700 p-3 rounded-2xl rounded-tl-none max-w-[85%] self-start">
-          ${welcomeMsg}
-        </div>
-      `;
+      chatMessages.innerHTML = `<div class="bg-rose-50 text-slate-700 p-3 rounded-2xl rounded-tl-none max-w-[85%] self-start">${welcomeMsg}</div>`;
     }
 
     sendChatBtn.addEventListener('click', handleChatSubmit);
-    chatInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') handleChatSubmit();
-    });
+    chatInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleChatSubmit(); });
 
     async function handleChatSubmit() {
+      const activeKey = getStoredKey();
       const userMessage = chatInput.value.trim();
-      if (!userMessage) return;
+      if (!userMessage || !activeKey) return;
 
-      // Append user message to screen
       const userBubble = document.createElement('div');
       userBubble.className = "bg-rose-500 text-white p-3 rounded-2xl rounded-tr-none max-w-[85%] self-end ml-auto text-right mb-2";
       userBubble.innerText = userMessage;
@@ -516,14 +541,12 @@ Do not output markdown blockquotes, wrap your response in a json block.`;
       chatInput.value = '';
       chatMessages.scrollTop = chatMessages.scrollHeight;
 
-      // Append typing container for Tito Al
       const botBubble = document.createElement('div');
       botBubble.className = "bg-slate-100 text-slate-700 p-3 rounded-2xl rounded-tl-none max-w-[85%] self-start mb-2 relative min-h-[30px]";
       botBubble.innerHTML = `<span class="animate-pulse">Tito Al is writing...</span>`;
       chatMessages.appendChild(botBubble);
       chatMessages.scrollTop = chatMessages.scrollHeight;
 
-      // Add users query to memory list
       chatSessionHistory.push({ role: "user", parts: [{ text: userMessage }] });
 
       try {
@@ -532,7 +555,7 @@ Do not output markdown blockquotes, wrap your response in a json block.`;
           generationConfig: { maxOutputTokens: 500 }
         };
 
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${API_KEY}`, {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${activeKey}`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload)
@@ -541,59 +564,50 @@ Do not output markdown blockquotes, wrap your response in a json block.`;
         const data = await response.json();
         const responseText = data.candidates[0].content.parts[0].text;
 
-        // Render response
         botBubble.innerHTML = responseText;
         chatMessages.scrollTop = chatMessages.scrollHeight;
 
-        // Keep model's response in conversational history memory
         chatSessionHistory.push({ role: "model", parts: [{ text: responseText }] });
 
       } catch (error) {
         console.error(error);
-        botBubble.innerHTML = `<span class="text-rose-500 font-bold">Nasira ang linya natin, pre. Paki-tanong ulit si Tito Al!</span>`;
+        botBubble.innerHTML = `<span class="text-rose-500 font-bold">Nasira ang linya natin. Try asking again!</span>`;
       }
     }
 
-    // 4. History Drawer Logic (Local Storage)
+    // History Logic
     historyBtn.addEventListener('click', openHistory);
     closeHistoryBtn.addEventListener('click', closeHistory);
-    drawerOverlay.addEventListener('click', closeHistory);
+    drawerOverlay.addEventListener('click', () => {
+      closeHistory();
+      settingsDrawer.classList.add('translate-x-full');
+    });
 
-    function openHistory() {
-      renderHistoryList();
-      historyDrawer.classList.remove('translate-x-full');
-      drawerOverlay.classList.remove('hidden');
-    }
-
-    function closeHistory() {
-      historyDrawer.classList.add('translate-x-full');
-      drawerOverlay.classList.add('hidden');
-    }
+    function openHistory() { renderHistoryList(); historyDrawer.classList.remove('translate-x-full'); drawerOverlay.classList.remove('hidden'); }
+    function closeHistory() { historyDrawer.classList.add('translate-x-full'); drawerOverlay.classList.add('hidden'); }
 
     function saveToHistory(item) {
       let list = JSON.parse(localStorage.getItem('rizz_history')) || [];
-      list.unshift(item); // Put most recent on top
-      if (list.length > 10) list.pop(); // Cap history to last 10 entries
+      list.unshift(item);
+      if (list.length > 10) list.pop();
       localStorage.setItem('rizz_history', JSON.stringify(list));
     }
 
     function renderHistoryList() {
       const list = JSON.parse(localStorage.getItem('rizz_history')) || [];
       historyList.innerHTML = '';
-
       if (list.length === 0) {
-        historyList.innerHTML = `<p class="text-sm text-slate-400 text-center py-10">No history found yet. Subukan mo nang mag-rizz!</p>`;
+        historyList.innerHTML = `<p class="text-sm text-slate-400 text-center py-10">No history found yet.</p>`;
         return;
       }
-
-      list.forEach((item, index) => {
+      list.forEach((item) => {
         const div = document.createElement('div');
         div.className = "bg-slate-50 border hover:border-rose-300 p-4 rounded-2xl cursor-pointer transition flex items-center space-x-3";
         div.onclick = () => loadHistoryItem(item);
         div.innerHTML = `
           ${item.image ? `<img src="${item.image}" class="w-10 h-10 object-cover rounded-lg border">` : `<div class="w-10 h-10 bg-rose-100 text-rose-500 rounded-lg flex items-center justify-center"><i class="fa-solid fa-message text-xs"></i></div>`}
           <div class="flex-1 text-left min-w-0">
-            <p class="text-xs font-bold text-slate-800 truncate">${item.context || "No context context"}</p>
+            <p class="text-xs font-bold text-slate-800 truncate">${item.context || "No context provided"}</p>
             <p class="text-[10px] text-slate-500 mt-0.5">${item.vibe} • ${item.score}% Kilig</p>
           </div>
         `;
@@ -602,35 +616,20 @@ Do not output markdown blockquotes, wrap your response in a json block.`;
     }
 
     function loadHistoryItem(item) {
-      if (item.image) {
-        setSelectedImage(item.image);
-      } else {
-        selectedImageBase64 = null;
-        imagePreview.src = '';
-        imagePreviewContainer.classList.add('hidden');
-      }
+      if (item.image) { setSelectedImage(item.image); } else { selectedImageBase64 = null; imagePreview.src = ''; imagePreviewContainer.classList.add('hidden'); }
       contextInput.value = item.context || '';
       resultsBlock.classList.remove('hidden');
-      
       updateKiligMeter(item.score, item.level, item.analysis);
-
       rizzOutputContainer.innerHTML = '';
-      item.rizz.forEach((option, idx) => {
-        renderRizzCard(idx + 1, option);
-      });
-
+      item.rizz.forEach((option, idx) => { renderRizzCard(idx + 1, option); });
       resetChatArea(item.vibe);
       closeHistory();
       resultsBlock.scrollIntoView({ behavior: 'smooth' });
     }
 
     clearHistoryBtn.addEventListener('click', () => {
-      if(confirm("Sigurado ka bang gusto mo burahin lahat ng past banats mo?")) {
-        localStorage.removeItem('rizz_history');
-        renderHistoryList();
-      }
+      if(confirm("Burahin lahat ng history?")) { localStorage.removeItem('rizz_history'); renderHistoryList(); }
     });
-
   </script>
 </body>
 </html>
